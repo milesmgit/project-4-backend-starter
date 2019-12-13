@@ -15,11 +15,18 @@ router.get('/', (req, res) => {
     })
 });
 
+
+
+
+
+
+
 /* CREATE && SIGNUP a user. */
 router.post('/signup', (req, res) => {
   if (req.body.email && req.body.password) {
     let newUser = {
       email: req.body.email,
+      username: req.body.username,
       password: req.body.password
     }
     User.findOne({ where: { email: req.body.email } })
@@ -98,7 +105,7 @@ router.get('/:id', jwtCheck({ secret: config.jwtSecret }), (req, res) => {
 
 // Having trouble with Updating a user
 
-//UPDATE A User
+//UPDATE A USER
 
 router.put('/:id', (req, res) => {          
   User.update(req.body.updateUser, {
@@ -112,7 +119,7 @@ router.put('/:id', (req, res) => {
 
 
 
-// DELETE AN INSTRUCTOR
+// DELETE AN USER
 router.delete('/:id', (req, res) => {
   User.destroy({ where: { id: req.params.id } })
     .then(() => {
