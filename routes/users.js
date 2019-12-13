@@ -5,6 +5,7 @@ const jwtCheck = require('express-jwt');
 const passport = require('../passport-config/passport')
 const config = require('../passport-config/config');
 const User = require('../models').User;
+const Story = require('../models').Story;
 
 /* GET users listing. */
 router.get('/', (req, res) => {
@@ -14,7 +15,7 @@ router.get('/', (req, res) => {
     })
 });
 
-/* SIGNUP a user. */
+/* CREATE && SIGNUP a user. */
 router.post('/signup', (req, res) => {
   if (req.body.email && req.body.password) {
     let newUser = {
@@ -39,6 +40,9 @@ router.post('/signup', (req, res) => {
   }
 })
 
+
+// login User && Authentication
+
 router.post('/login', (req, res) => {
   if (req.body.email && req.body.password) {
     User.findOne({ where: { email: req.body.email } })
@@ -62,6 +66,9 @@ router.post('/login', (req, res) => {
   }
 })
 
+
+
+
 router.post('/', (req, res) => {
   console.log(req.headers)
   var decoded = jwt.decode(req.headers.authorization, config.jwtSecret);
@@ -75,7 +82,9 @@ router.post('/', (req, res) => {
 router.get('/:id', jwtCheck({ secret: config.jwtSecret }), (req, res) => {
   let decoded = jwt.decode(req.headers.authorization.split(' ')[1], config.jwtSecret)
 
-  User.findByPk(req.params.id)
+  User.findByPk(req.params.id, {
+   include: [{ model: Story }]
+  })
     .then(user => {
       if (user.id === decoded.id) {
         res.json(user)
@@ -85,4 +94,41 @@ router.get('/:id', jwtCheck({ secret: config.jwtSecret }), (req, res) => {
     })
 })
 
+
+
+// Having trouble with Updating a user
+
+//UPDATE A User
+
+router.put('/:id', (req, res) => {          
+  User.update(req.body.updateUser, {
+    
+    where: { id: req.params.id }
+  })
+    .then(user => {
+      res.json({ user })
+    })
+})
+
+
+
+// DELETE AN INSTRUCTOR
+router.delete('/:id', (req, res) => {
+  User.destroy({ where: { id: req.params.id } })
+    .then(() => {
+      return User.findAll()
+    })
+    .then(user => {
+      res.json({ user })
+    })
+})
+
+
+
+
+
+
 module.exports = router;
+
+
+
