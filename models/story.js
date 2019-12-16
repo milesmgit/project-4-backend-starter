@@ -3,7 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const Story = sequelize.define('Story', {
     url: DataTypes.STRING,
     source: DataTypes.STRING,
-    data: DataTypes.STRING
+    data: DataTypes.TEXT
   }, {
     tableName: "Stories"
   });
