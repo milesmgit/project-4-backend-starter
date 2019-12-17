@@ -86,20 +86,40 @@ router.post('/', (req, res) => {
     })
 })
 
-router.get('/:id', jwtCheck({ secret: config.jwtSecret }), (req, res) => {
-  let decoded = jwt.decode(req.headers.authorization.split(' ')[1], config.jwtSecret)
+
+
+
+router.get('/:id', (req, res) => {
+  
 
   User.findByPk(req.params.id, {
    include: [{ model: Story }]
   })
     .then(user => {
-      if (user.id === decoded.id) {
+    
         res.json(user)
-      } else {
-        res.json({ message: "You are not authorized to see that" })
-      }
+      
     })
 })
+
+
+
+
+
+// router.get('/:id', jwtCheck({ secret: config.jwtSecret }), (req, res) => {
+//   let decoded = jwt.decode(req.headers.authorization.split(' ')[1], config.jwtSecret)
+
+//   User.findByPk(req.params.id, {
+//    include: [{ model: Story }]
+//   })
+//     .then(user => {
+//       if (user.id === decoded.id) {
+//         res.json(user)
+//       } else {
+//         res.json({ message: "You are not authorized to see that" })
+//       }
+//     })
+// })
 
 
 
